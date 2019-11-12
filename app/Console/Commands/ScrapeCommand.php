@@ -6,7 +6,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 //MeigaraのModelを指定することでここのTableにデータを格納する。
 use App\Meigara;
-use Config;
+use App\MeigaraList;
 
 class ScrapeCommand extends Command
 {
@@ -48,44 +48,49 @@ class ScrapeCommand extends Command
     {
       // ここに処理を記述
       // function dbsave($url){
-      function dbsave($url){
+      function dbsave($meigaraCode,$url){
 
         $crawler = \Goutte::request('GET', $url);
 
         //li に年度データがあるのをすべて回収
         //https://kabuoji3.com/stock/7203/2018/
-        $li = $crawler->filter('a')->each(function($element) use ($url){
-              echo $element->attr('href')."\n";
+        $li = $crawler->filter('a')->each(function($element) use ($url,$meigaraCode){
+              //$element->attr('href')が$urlから始る（前方一致）
               if (0 === strpos($element->attr('href'), $url)) {
-                echo $element->attr('href')." は" .$url."から始まります"."\n";
-              }
-        });
 
-        //これでtrをデータ格納。。。
-        $tr = $crawler->filter('table')->eq(0)->filter('tr')->each(function($element){
-          $meigara = new Meigara;
-          if(count($element->filter('td'))){
-            // $meigara->meigaraCode = $sampleService->getSampleRepository();;
-            $meigara->meigaraCode = Config::get('user.name');
-            $meigara->date = $element->filter('td')->eq(0)->text()."\n";
-            $meigara->openingPrice = $element->filter('td')->eq(1)->text()."\n";
-            $meigara->highPrice = $element->filter('td')->eq(2)->text()."\n";
-            $meigara->lowPrice = $element->filter('td')->eq(3)->text()."\n";
-            $meigara->closingPrice = $element->filter('td')->eq(4)->text()."\n";
-            //SQLSTATE[22033]がおきるのでいったん置いておく。
-            // $meigara->volume = $element->filter('td')->eq(5)->text()."\n";
-            $meigara->save();
-          }
+                //meigaraCodeに対する年次リストの取得
+                echo $element->attr('href')."に対するアクセス開始。"."\n";
+                $crawlerLi = \Goutte::request('GET', $element->attr('href'));
+
+                //URLがあったらそれをDBに格納。
+                $td = $crawlerLi->filter('table')->eq(0)->filter('tr')->each(function($element) use ($meigaraCode){
+                  if(count($element->filter('td'))){
+                    $meigara = Meigara::updateOrCreate(
+                      ['meigaraCode' => $meigaraCode,
+                      'meigaraCodeA' => '',
+                      'date' => $element->filter('td')->eq(0)->text()],
+                      ['openingPrice' => $element->filter('td')->eq(1)->text(),
+                        'highPrice' => $element->filter('td')->eq(2)->text(),
+                        'lowPrice' => $element->filter('td')->eq(3)->text(),
+                        'closingPrice' => $element->filter('td')->eq(4)->text()
+                      ]
+                    );
+                  }
+                });
+
+              }
         });
       }
 
-      $meigaralist = \App\MeigaraList::select('meigaraCode')->get();
+      //取得する銘柄コード一覧をTBLから取得(ScrapeListCommandで登録済)
+      $meigaralist = MeigaraList::select('meigaraCode')->get();
 
+      //取得した銘柄コードでサイトアクセスして登録を回す
       foreach($meigaralist as $key=>$meigara){
         $siteurl = "https://kabuoji3.com/stock/".$meigara['meigaraCode']."/";
-        Config::set(['user' => ['name' => $meigara['meigaraCode']]]);
+        // Config::set(['user' => ['name' => $meigara['meigaraCode']]]);
         echo "実行開始：".$meigara['meigaraCode']."\n";
-        dbsave($siteurl);
+        dbsave($meigara['meigaraCode'],$siteurl);
       }
       // $siteurl = "https://kabuoji3.com/stock/7203/";
       // dbsave($siteurl);
