@@ -12,7 +12,7 @@ use DB;
 class PostsController extends Controller
 {
     public function index() {
-      $meigaras = Meigara::latest()->get();
+      $meigaras = Meigara::where('meigaraCode','1301')->where('date','2019-11-11')->latest()->get();
       return view('posts.index')->with('meigaras',$meigaras);
     }
 

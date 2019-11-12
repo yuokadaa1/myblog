@@ -64,7 +64,9 @@ class ScrapeCommand extends Command
 
                 //URLがあったらそれをDBに格納。
                 $td = $crawlerLi->filter('table')->eq(0)->filter('tr')->each(function($element) use ($meigaraCode){
+
                   if(count($element->filter('td'))){
+
                     $meigara = Meigara::updateOrCreate(
                       ['meigaraCode' => $meigaraCode,
                       'meigaraCodeA' => '',
@@ -75,6 +77,7 @@ class ScrapeCommand extends Command
                         'closingPrice' => $element->filter('td')->eq(4)->text()
                       ]
                     );
+
                   }
                 });
 
