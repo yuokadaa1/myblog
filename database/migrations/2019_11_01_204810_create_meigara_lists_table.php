@@ -14,14 +14,16 @@ class CreateMeigaraListsTable extends Migration
     public function up()
     {
         Schema::create('meigara_lists', function (Blueprint $table) {
-          // $table->increments('id');
-          $table->smallInteger('meigaraCode')->primary();
-          $table->string('meigaraName')->nullable();
-          $table->string('joujouKbnName')->nullable();
+          $table->increments('id');
+          $table->smallInteger('meigaraCode');
+          $table->string('meigaraName')->default('');
+          $table->string('joujouKbnName')->default('');
           $table->string('meigaraNameYomi')->nullable();
           $table->date('date')->nullable();
           $table->boolean('delFlg')->nullable();
           $table->timestamps();
+
+          $table->unique('meigaraCode');
         });
     }
 

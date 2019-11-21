@@ -67,7 +67,8 @@ class ScrapeCommand extends Command
 
                   if(count($element->filter('td'))){
 
-                    $meigara = Meigara::updateOrCreate(
+                     Meigara::unguard(); // セキュリティー解除
+                     $meigara = Meigara::updateOrCreate(
                       ['meigaraCode' => $meigaraCode,
                       'meigaraCodeA' => '',
                       'date' => $element->filter('td')->eq(0)->text()],
@@ -77,7 +78,8 @@ class ScrapeCommand extends Command
                         'closingPrice' => $element->filter('td')->eq(4)->text()
                       ]
                     );
-
+                    Meigara::reguard(); // セキュリティーを再設定
+                    
                   }
                 });
 

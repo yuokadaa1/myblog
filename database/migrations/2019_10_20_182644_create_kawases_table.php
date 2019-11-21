@@ -14,12 +14,15 @@ class CreateKawasesTable extends Migration
     public function up()
     {
         Schema::create('kawases', function (Blueprint $table) {
-            $table->char('base',3);
-            $table->char('pair',3);
-            $table->date('date');
-            $table->time('time');
-            $table->double('rate',8,5);
-            $table->timestamps();
+          $table->increments('id');
+          $table->char('base',3);
+          $table->char('pair',3);
+          $table->date('date');
+          $table->time('time');
+          $table->double('rate',8,5);
+          $table->timestamps();
+
+          $table->unique(['base','pair','date','time']);
         });
     }
 
