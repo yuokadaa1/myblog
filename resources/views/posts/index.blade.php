@@ -1,7 +1,8 @@
 @extends('layouts.default')
 @section('content')
 
-@if (isset( $Meigaras ))
+<!-- まさかの小文字と大文字誤り -->
+@if (isset( $meigaras ))
   <ul>
     @forelse ($meigaras as $meigara)
       <li>
@@ -32,6 +33,11 @@
   <p>受け取る変数なし。</p>
 @endif
 
+@if (isset( $test1 ))
+  <a>テスト１：{{ $test1 }}</a></br>
+@else
+  <p>受け取る変数なし。</p>
+@endif
 
 <a>ドル／円 </a></br>
 <a>日経平均（円ベース） </a></br>

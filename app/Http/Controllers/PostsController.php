@@ -6,20 +6,21 @@ use Illuminate\Http\Request;
 use App\Post;
 use App\Http\Requests\PostRequest;
 use App\Meigara;
+use App\MeigaraList;
 use App\Kawase;
-use DB;
 
 class PostsController extends Controller
 {
     public function index() {
       // $meigaras = Meigara::where('meigaraCode','1301')->where('date','2019-11-11')->latest()->get();
+      $meigaras = Meigara::where('meigaraCode','1301')->where('date','2019-11-11')->get();
       // $meigaras = Meigara::where('meigaraCode','1301')->where('date','2019-11-11')->get();
-      // $meigaras = Meigara::first();
-      // $meigaras = DB::table('meigaras')->first();
-
       // $data = HogeModel::where([ ['id', $id], ['parent_id', $parent_id] ])->get()->toArray();
-      $meigaras = Meigara::where([ ['meigaraCode', '1301'], ['meigaraCodeA',''],['date', '2019-11-11'] ])->get()->toArray();
+      // $meigaras = Meigara::where([ ['meigaraCode', '1301'], ['meigaraCodeA',''],['date', '2019-11-11'] ])->get()->toArray();
+      // $meigaras = Meigara::where([ ['meigaraCode', '1301'], ['meigaraCodeA',''],['date', '2019-11-11'] ])->get();
       return view('posts.index')->with('meigaras',$meigaras);
+      // $test1 = "テスト１";
+      // return view('posts.index',compact('meigaras','test1'));
     }
 
     public function show(Meigara $meigaras) {
