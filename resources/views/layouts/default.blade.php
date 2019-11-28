@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/css/common.css">
   <script src="/js/main.js"></script>
   <script src="/js/chart.js"></script>
+  <script src="/js/jquery-3.4.1.js"></script>
 </head>
 
 <body>

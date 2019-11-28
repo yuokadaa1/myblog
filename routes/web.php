@@ -14,7 +14,8 @@
 Route::get('/', 'PostsController@index');
 Route::get('/first', 'PostsController@index');
 Route::get('/stock', 'PostsController@stock');
-Route::get('/stock/meigaraCode/{meigaraCode}', 'PostsController@stockChart');
+// Route::get('/stock/meigaraCode/{meigaraCode}', 'PostsController@stockChart');
+Route::get('/stock/meigaraCode/', 'PostsController@stockChart');
 Route::get('/exchange', 'PostsController@index');
 Route::get('/zaimu', 'PostsController@index');
 

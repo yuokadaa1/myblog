@@ -12,15 +12,8 @@ use App\Kawase;
 class PostsController extends Controller
 {
     public function index() {
-      // $meigaras = Meigara::where('meigaraCode','1301')->where('date','2019-11-11')->latest()->get();
       $meigaras = Meigara::where('meigaraCode','1301')->where('date','2019-11-11')->get();
-      // $meigaras = Meigara::where('meigaraCode','1301')->where('date','2019-11-11')->get();
-      // $data = HogeModel::where([ ['id', $id], ['parent_id', $parent_id] ])->get()->toArray();
-      // $meigaras = Meigara::where([ ['meigaraCode', '1301'], ['meigaraCodeA',''],['date', '2019-11-11'] ])->get()->toArray();
-      // $meigaras = Meigara::where([ ['meigaraCode', '1301'], ['meigaraCodeA',''],['date', '2019-11-11'] ])->get();
       return view('posts.index')->with('meigaras',$meigaras);
-      // $test1 = "テスト１";
-      // return view('posts.index',compact('meigaras','test1'));
     }
 
     public function show(Meigara $meigaras) {
@@ -56,15 +49,15 @@ class PostsController extends Controller
     }
 
     public function stock() {
-      // $Meigaras = new Meigara();
       return view('posts.stock');
     }
 
-    public function stockChart(int $meigaraCode) {
-      $Meigaras = DB::table('meigaras')->select('meigaraCode', 'date','lowPrice')->where('meigaraCode', $meigaraCode)->get();
+    // public function stockChart(int $meigaraCode) {
+    // public function stockChart(Request $request) {
+    public function stockChart(Request $request) {
+      // $Meigaras = Meigara::select('meigaraCode', 'date','lowPrice')->where('meigaraCode', $request->title)->where('date','like','2019-11%')->get();
+      $Meigaras = Meigara::select('meigaraCode', 'date','lowPrice')->where('meigaraCode', $request->title)->where('date','like','2019-11%')->get();
       return view('posts.stock')->with('Meigaras', $Meigaras);
-      // 複数渡す場合
-      // return view('test.normal',compact('test_1','test_2'));
     }
 
 }

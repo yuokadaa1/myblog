@@ -10,14 +10,21 @@
   var chartPrice = new Array();
 </script>
 
-<form method="get" action="{{ url('/stock/meigaraCode/7203') }}">
+<form method="get" action="{{ url('/stock/meigaraCode') }}">
   {{ csrf_field() }}
-  <p>
+  <li>
+    <a>
     <input type="text" name="title" placeholder="東証コードの入力" value="{{ old('title') }}">
     @if ($errors->has('title'))
-    <span class="error">{{ $errors->first('title') }}</span>
+      <span class="error">{{ $errors->first('title') }}</span>
     @endif
-  </p>
+    </a>
+    <a href="{{ url('/stock/meigaraCode') }}" class="edit">[Edit]</a>
+  </li>
+</form>
+
+<form method="get" action="{{ url('/stock/meigaraCode') }}">
+  {{ csrf_field() }}
   <p>
     <input type="submit" value="Search">
   </p>
@@ -32,9 +39,9 @@
       <a>株価：{{ $meigara->lowPrice }}</a>
     </li>
     <script>
-      // phpからjavascriptへ変数を渡す
       chartLabel.push(<?php echo $meigara->meigaraCode; ?>);
-      chartDate.push(<?php echo $meigara->date; ?>);
+      startLive = new Date(<?php echo strtotime($meigara->date)*1000; ?>);
+      chartDate.push(startLive);
       chartPrice.push(<?php echo $meigara->lowPrice; ?>);
     </script>
   @empty
