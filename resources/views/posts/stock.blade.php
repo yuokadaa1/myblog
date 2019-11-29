@@ -4,6 +4,62 @@
 
 @section('content')
 
+<!--  -->
+<script type="text/javascript">
+$(function() {
+	//追加
+	$('.addformbox').click(function() {
+		//クローンを変数に格納
+		var clonecode = $('.box:last').clone(true);
+		//数字を＋１し変数に格納
+		var cloneno = clonecode.attr('data-formno');
+		var cloneno2 = parseInt(cloneno) + 1;
+    var cloneno3 = parseInt(cloneno) + 2;
+		//data属性の数字を＋１
+		clonecode.attr('data-formno',cloneno2);
+		//数値
+		clonecode.find('.no').html(cloneno3);
+
+		//name属性の数字を+1
+		var namecode = clonecode.find('input.namae').attr('name');
+		namecode = namecode.replace(/input\[[0-9]{1,2}/g,'input[' + cloneno2);
+		clonecode.find('input.namae').attr('name',namecode);
+
+		//HTMLに追加
+		clonecode.insertAfter($('.box:last'));
+	});
+
+
+	//削除
+	$('.deletformbox').click(function() {
+		//クリックされた削除ボタンの親要素を削除
+		$(this).parents(".box").remove();
+
+		var scount = 0;
+		//番号振り直し
+		$('.box').each(function(){
+			var scount2 = scount + 1;
+
+			//data属性の数字
+			$(this).attr('data-formno',scount);
+			$('.no',this).html(scount2);
+
+			//input質問タイトル番号振り直し
+			var name = $('input.namae',this).attr('name');
+			name = name.replace(/input\[[0-9]{1,2}/g,'input[' + scount);
+			$('input.namae',this).attr('name',name);
+
+			var name2 = $('textarea.toiawase',this).attr('name');
+			name2 = name2.replace(/textarea\[[0-9]{1,2}/g,'textarea[' + scount);
+			$('textarea.toiawase',this).attr('name',name2);
+
+			scount += 1;
+		});
+	});
+
+});
+</script>
+
 <script>
   var chartLabel = new Array();
   var chartDate = new Array();
@@ -12,23 +68,25 @@
 
 <form method="get" action="{{ url('/stock/meigaraCode') }}">
   {{ csrf_field() }}
-  <li>
-    <a>
-    <input type="text" name="title" placeholder="東証コードの入力" value="{{ old('title') }}">
-    @if ($errors->has('title'))
-      <span class="error">{{ $errors->first('title') }}</span>
-    @endif
-    </a>
-    <a href="{{ url('/stock/meigaraCode') }}" class="edit">[Edit]</a>
-  </li>
-</form>
-
-<form method="get" action="{{ url('/stock/meigaraCode') }}">
-  {{ csrf_field() }}
+  <div class="box" data-formno="0" style="border:dashed 1px #ccc">
+    <li>
+      <a class="no">1</a>
+      <a>
+        <input type="text" name="input[0]" class="namae" placeholder="東証コードの入力" value="{{ old('title') }}">
+        @if ($errors->has('title'))
+          <span class="error">{{ $errors->first('title') }}</span>
+        @endif
+      </a>
+      <a class="addformbox">追加</a>
+      <a class="deletformbox">削除</a>
+    </li>
+  </div>
   <p>
     <input type="submit" value="Search">
   </p>
+
 </form>
+
 
 @if (isset( $Meigaras ))
 <ul>
@@ -52,9 +110,9 @@
   <p>受け取る変数なし。</p>
 @endif
 
-<script>
-  alert('label：' + chartLabel + 'date：' + chartDate + 'price：' + chartPrice);
-</script>
+// <script>
+//   alert('label：' + chartLabel + 'date：' + chartDate + 'price：' + chartPrice);
+// </script>
 
 <h1>グラフ</h1>
 <canvas id="myLineChart"></canvas>

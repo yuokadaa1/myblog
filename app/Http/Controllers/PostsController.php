@@ -55,8 +55,10 @@ class PostsController extends Controller
     // public function stockChart(int $meigaraCode) {
     // public function stockChart(Request $request) {
     public function stockChart(Request $request) {
-      // $Meigaras = Meigara::select('meigaraCode', 'date','lowPrice')->where('meigaraCode', $request->title)->where('date','like','2019-11%')->get();
-      $Meigaras = Meigara::select('meigaraCode', 'date','lowPrice')->where('meigaraCode', $request->title)->where('date','like','2019-11%')->get();
+      foreach ($request->input as $input) {
+         $array[] = $input;
+      }
+      $Meigaras = Meigara::select('meigaraCode', 'date','lowPrice')->whereIn('meigaraCode', $array)->where('date','like','2019-11%')->get();
       return view('posts.stock')->with('Meigaras', $Meigaras);
     }
 
