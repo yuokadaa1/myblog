@@ -29,30 +29,24 @@ $(function() {
 		clonecode.insertAfter($('.box:last'));
 	});
 
-
 	//削除
 	$('.deletformbox').click(function() {
 		//クリックされた削除ボタンの親要素を削除
 		$(this).parents(".box").remove();
-
 		var scount = 0;
 		//番号振り直し
 		$('.box').each(function(){
 			var scount2 = scount + 1;
-
 			//data属性の数字
 			$(this).attr('data-formno',scount);
 			$('.no',this).html(scount2);
-
 			//input質問タイトル番号振り直し
 			var name = $('input.namae',this).attr('name');
 			name = name.replace(/input\[[0-9]{1,2}/g,'input[' + scount);
 			$('input.namae',this).attr('name',name);
-
 			var name2 = $('textarea.toiawase',this).attr('name');
 			name2 = name2.replace(/textarea\[[0-9]{1,2}/g,'textarea[' + scount);
 			$('textarea.toiawase',this).attr('name',name2);
-
 			scount += 1;
 		});
 	});
@@ -97,12 +91,12 @@ $(function() {
       <a>株価：{{ $meigara->lowPrice }}</a>
     </li>
     <script>
-      chartLabel.push(<?php echo $meigara->meigaraCode; ?>);
+			chartLabel.push(<?php echo $meigara->meigaraCode; ?>);
       startLive = new Date(<?php echo strtotime($meigara->date)*1000; ?>);
       chartDate.push(startLive);
       chartPrice.push(<?php echo $meigara->lowPrice; ?>);
     </script>
-  @empty
+	@empty
     <li>No meigara yet</li>
   @endforelse
 </ul>
@@ -116,50 +110,49 @@ $(function() {
 
 <h1>グラフ</h1>
 <canvas id="myLineChart"></canvas>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> -->
 <script>
-var ctx = document.getElementById("myLineChart");
-var myLineChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    // labels: ['8月1日', '8月2日', '8月3日', '8月4日', '8月5日', '8月6日', '8月7日'],
-    labels: chartDate,
-    datasets: [
-      {
-        label: '最高気温(度）',
-        // data: [35, 34, 37, 35, 34, 35, 34, 25],
-        data: chartPrice,
-        borderColor: "rgba(255,0,0,1)",
-        backgroundColor: "rgba(0,0,0,0)"
-      },
-      {
-        label: '最低気温(度）',
-        data: [7025, 7027, 7027, 7025, 7026, 7027, 7025, 7021],
-        // data: [25, 27, 27, 25, 26, 27, 25, 21],
-        borderColor: "rgba(0,0,255,1)",
-        backgroundColor: "rgba(0,0,0,0)"
-      }
-    ],
-  },
-  options: {
-    title: {
-      display: true,
-      text: '気温（8月1日~8月7日）'
-    },
-    scales: {
-      yAxes: [{
-        ticks: {
-          suggestedMax: 40,
-          suggestedMin: 0,
-          stepSize: 10,
-          callback: function(value, index, values){
-            return  value +  '円'
-          }
-        }
-      }]
-    },
-  }
-});
+	var ctx = document.getElementById("myLineChart");
+	var myLineChart = new Chart(ctx, {
+	  type: 'line',
+	  data: {
+	    // labels: ['8月1日', '8月2日', '8月3日', '8月4日', '8月5日', '8月6日', '8月7日'],
+	    labels: chartDate[0],
+	    datasets: [
+	      {
+	        label: '最高気温(度）',
+	        // data: [35, 34, 37, 35, 34, 35, 34, 25],
+	        data: chartPrice[0],
+	        borderColor: "rgba(255,0,0,1)",
+	        backgroundColor: "rgba(0,0,0,0)"
+	      },
+	      {
+	        label: '最低気温(度）',
+	        data: [7025, 7027, 7027, 7025, 7026, 7027, 7025, 7021],
+	        // data: [25, 27, 27, 25, 26, 27, 25, 21],
+	        borderColor: "rgba(0,0,255,1)",
+	        backgroundColor: "rgba(0,0,0,0)"
+	      }
+	    ],
+	  },
+	  options: {
+	    title: {
+	      display: true,
+	      text: '気温（8月1日~8月7日）'
+	    },
+	    scales: {
+	      yAxes: [{
+	        ticks: {
+	          suggestedMax: 40,
+	          suggestedMin: 0,
+	          stepSize: 10,
+	          callback: function(value, index, values){
+	            return  value +  '円'
+	          }
+	        }
+	      }]
+	    },
+	  }
+	});
 </script>
 
 @endsection

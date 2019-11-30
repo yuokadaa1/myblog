@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 use App\Meigara;
 use App\MeigaraList;
 
-class ScrapeCommand extends Command
+class ScrapeMeigara extends Command
 {
     /**
      * The name and signature of the console command.
@@ -18,7 +18,7 @@ class ScrapeCommand extends Command
     // protected $signature = 'command:name';
     //コマンド名を設定（元：command:name→変更後：command:scrapecommand）
     //php artisan list で出てくる名前
-    protected $signature = 'command:scrapecommand';
+    protected $signature = 'command:ScrapeMeigara';
 
     /**
      * The console command description.
@@ -27,7 +27,7 @@ class ScrapeCommand extends Command
      */
     // protected $description = 'Command description';
     //コマンドの説明（元：Command description→変更後：scrapecommandのコマンド説明）
-    protected $description = 'scrapecommandのコマンド説明';
+    protected $description = '銘柄コードに対応する株価を取得';
 
     /**
      * Create a new command instance.
@@ -79,7 +79,7 @@ class ScrapeCommand extends Command
                       ]
                     );
                     Meigara::reguard(); // セキュリティーを再設定
-                    
+
                   }
                 });
 

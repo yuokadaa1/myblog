@@ -15,8 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         //
         //ScrapeCommand.phpの実行。
-        \App\Console\Commands\ScrapeCommand::class,   //コマンドの登録
-        \App\Console\Commands\ScrapeListCommand::class,   //コマンドの登録
+        \App\Console\Commands\ScrapeMeigara::class,   //コマンドの登録
+        \App\Console\Commands\ScrapeMeigaraList::class,   //コマンドの登録
     ];
 
     /**

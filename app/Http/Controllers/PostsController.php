@@ -52,10 +52,9 @@ class PostsController extends Controller
       return view('posts.stock');
     }
 
-    // public function stockChart(int $meigaraCode) {
-    // public function stockChart(Request $request) {
     public function stockChart(Request $request) {
       foreach ($request->input as $input) {
+        //画面から入力された東証コードを配列に格納
          $array[] = $input;
       }
       $Meigaras = Meigara::select('meigaraCode', 'date','lowPrice')->whereIn('meigaraCode', $array)->where('date','like','2019-11%')->get();
