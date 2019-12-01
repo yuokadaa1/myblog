@@ -57,8 +57,28 @@ class PostsController extends Controller
         //画面から入力された東証コードを配列に格納
          $array[] = $input;
       }
-      $Meigaras = Meigara::select('meigaraCode', 'date','lowPrice')->whereIn('meigaraCode', $array)->where('date','like','2019-11%')->get();
-      return view('posts.stock')->with('Meigaras', $Meigaras);
+      $inputCount = count($array);
+      //DBから丸ごととってくる。
+      $Meigaras = Meigara::select('meigaraCode', 'date','lowPrice')->whereIn('meigaraCode', $array)->where('date','like','2019-11%')->orderBy('meigaraCode','asc')->orderBy('date','desc')->get();
+
+      //取得してきたDBの値を項目ごとに分解する。
+      $i = 0;
+      foreach ($request->input as $input) {
+        //画面から入力された東証コードを連想配列に格納
+        $filtered = $Meigaras->where('meigaraCode', $input);
+        //要素の中から指定したキーの項目だけをまとめて取ってきて多重配列に格納する。
+        //$arrayMeigaraCode[][] =[[0][1301,1301,1301],[1][1332,1332,1332]]
+        $plucked = $Meigaras->pluck('meigaraCode');
+        $arrayMeigaraCode[$i][] = $plucked->all();
+        $plucked = $Meigaras->pluck('date');
+        $arrayDate[$i][] = $plucked->all();
+        $plucked = $Meigaras->pluck('lowPrice');
+        $arrayPrice[$i][] = $plucked->all();
+        $i++;
+      }
+
+      // return view('posts.stock')->with(['Meigaras' => $Meigaras,'inputCount' => count($array)]);
+      return view('posts.stock',compact('Meigaras','inputCount','arrayMeigaraCode','arrayDate','arrayPrice'));
     }
 
 }

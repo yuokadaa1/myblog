@@ -97,7 +97,5 @@ class ScrapeMeigara extends Command
         echo "実行開始：".$meigara['meigaraCode']."\n";
         dbsave($meigara['meigaraCode'],$siteurl);
       }
-      // $siteurl = "https://kabuoji3.com/stock/7203/";
-      // dbsave($siteurl);
   }
 }
