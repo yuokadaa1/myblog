@@ -75,7 +75,9 @@ class ScrapeMeigara extends Command
                       ['openingPrice' => $element->filter('td')->eq(1)->text(),
                         'highPrice' => $element->filter('td')->eq(2)->text(),
                         'lowPrice' => $element->filter('td')->eq(3)->text(),
-                        'closingPrice' => $element->filter('td')->eq(4)->text()
+                        'closingPrice' => $element->filter('td')->eq(4)->text(),
+                        'volume' => $element->filter('td')->eq(5)->text(),
+                        'tradingValue' => $element->filter('td')->eq(6)->text()
                       ]
                     );
                     Meigara::reguard(); // セキュリティーを再設定

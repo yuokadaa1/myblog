@@ -24,7 +24,7 @@ class CreateMeigarasTable extends Migration
           $table->smallInteger('closingPrice')->nullable();
           $table->smallInteger('highPrice')->nullable();
           $table->smallInteger('lowPrice')->nullable();
-          $table->mediumInteger('volume')->nullable();
+          $table->integer('volume')->nullable();
           $table->integer('tradingValue')->nullable();
           $table->timestamps();
 

@@ -61,7 +61,7 @@ $(function() {
 </script>
 
 <form method="get" action="{{ url('/stock/meigaraCode') }}">
-  {{ csrf_field() }}
+	{{ csrf_field() }}
   <div class="box" data-formno="0" style="border:dashed 1px #ccc">
     <li>
       <a class="no">1</a>
@@ -81,6 +81,7 @@ $(function() {
 </form>
 
 @if (isset( $Meigaras ))
+	{{ $meigaraOpening }}
 	<ul>
 	  @forelse ($Meigaras as $meigara)
 	    <li>
@@ -98,13 +99,45 @@ $(function() {
 	    <li>No meigara yet</li>
 	  @endforelse
 	</ul>
+
+	<script>
+		var chartDate2 = new Array();
+		var chartPrice2 = new Array();
+
+		var data = <?php echo $meigaraDate; ?>;
+		for(key in data){
+			chartDate2[key] = data[key];
+			alert(key + "さんの日付は、" + data[key] + "です。\n" + chartDate2[key]) ;
+		};
+		var data = <?php echo $meigaraOpening; ?>;
+		for(key in data){
+			alert(key + "さんのOpening金額は、" + data[key] + "です。") ;
+		};
+		var data = <?php echo $meigaraClosing; ?>;
+		for(key in data){
+			alert(key + "さんのClosing金額は、" + data[key] + "です。") ;
+		};
+		var data = <?php echo $meigaraHigh; ?>;
+		for(key in data){
+			alert(key + "さんのHigh金額は、" + data[key] + "です。") ;
+		};
+		var data = <?php echo $meigaraLow; ?>;
+		for(key in data){
+			chartPrice2[key] = data[key];
+			alert(key + "さんのlow金額は、" + data[key] + "です。\n" + chartPrice2[key]) ;
+		};
+
+	</script>
+	<a>
+
 @else
   <p>受け取る変数なし。</p>
 @endif
 
-<script>
-  alert('label：' + chartLabel + 'date：' + chartDate + 'price：' + chartPrice);
-</script>
+
+//<script>
+//  alert('label：' + chartLabel + 'date：' + chartDate + 'price：' + chartPrice);
+//</script>
 
 <h1>グラフ</h1>
 <canvas id="myLineChart"></canvas>
@@ -114,12 +147,12 @@ $(function() {
 	  type: 'line',
 	  data: {
 	    // labels: ['8月1日', '8月2日', '8月3日', '8月4日', '8月5日', '8月6日', '8月7日'],
-	    labels: chartDate,
+	    labels: chartDate2[1301],
 	    datasets: [
 	      {
 	        label: '最高気温(度）',
 	        // data: [35, 34, 37, 35, 34, 35, 34, 25],
-	        data: chartPrice,
+	        data: chartPrice2[1301],
 	        borderColor: "rgba(255,0,0,1)",
 	        backgroundColor: "rgba(0,0,0,0)"
 	      },

@@ -64,6 +64,7 @@ class ScrapeMeigaraList extends Command
       }
 
       $siteurl = "http://www.kabu-data.info/all_code/code_tosyo1_code.htm";
+      echo "実行開始\n";
       dbsave($siteurl);
     }
 }

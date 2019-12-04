@@ -57,28 +57,33 @@ class PostsController extends Controller
         //画面から入力された東証コードを配列に格納
          $array[] = $input;
       }
-      $inputCount = count($array);
-      //DBから丸ごととってくる。
-      $Meigaras = Meigara::select('meigaraCode', 'date','lowPrice')->whereIn('meigaraCode', $array)->where('date','like','2019-11%')->orderBy('meigaraCode','asc')->orderBy('date','desc')->get();
+      //DBから値を取得
+      $Meigaras = Meigara::select('meigaraCode', 'date','openingPrice','closingPrice','highPrice','lowPrice')->whereIn('meigaraCode', $array)->where('date','like','2019-11%')->orderBy('meigaraCode','asc')->orderBy('date','desc')->get();
 
-      //取得してきたDBの値を項目ごとに分解する。
-      $i = 0;
-      foreach ($request->input as $input) {
-        //画面から入力された東証コードを連想配列に格納
-        $filtered = $Meigaras->where('meigaraCode', $input);
-        //要素の中から指定したキーの項目だけをまとめて取ってきて多重配列に格納する。
-        //$arrayMeigaraCode[][] =[[0][1301,1301,1301],[1][1332,1332,1332]]
-        $plucked = $Meigaras->pluck('meigaraCode');
-        $arrayMeigaraCode[$i][] = $plucked->all();
-        $plucked = $Meigaras->pluck('date');
-        $arrayDate[$i][] = $plucked->all();
-        $plucked = $Meigaras->pluck('lowPrice');
-        $arrayPrice[$i][] = $plucked->all();
-        $i++;
-      }
+      //json変換用に日付、各金額のみを抽出した二次配列に変換（キーは銘柄コード）
+      $arrayDate = $Meigaras->mapToGroups(function ($item, $key) {
+        return [$item['meigaraCode'] => [$item['date']]];
+      });
+      $arrayOpening = $Meigaras->mapToGroups(function ($item, $key) {
+        return [$item['meigaraCode'] => [$item['openingPrice']]];
+      });
+      $arrayClosing = $Meigaras->mapToGroups(function ($item, $key) {
+        return [$item['meigaraCode'] => [$item['closingPrice']]];
+      });
+      $arrayLow = $Meigaras->mapToGroups(function ($item, $key) {
+        return [$item['meigaraCode'] => [$item['lowPrice']]];
+      });
+      $arrayHigh = $Meigaras->mapToGroups(function ($item, $key) {
+        return [$item['meigaraCode'] => [$item['highPrice']]];
+      });
+      //jsonに変換
+      $meigaraDate =  json_encode($arrayDate, JSON_UNESCAPED_UNICODE);
+      $meigaraOpening =  json_encode($arrayOpening, JSON_UNESCAPED_UNICODE);
+      $meigaraClosing =  json_encode($arrayClosing, JSON_UNESCAPED_UNICODE);
+      $meigaraLow =  json_encode($arrayLow, JSON_UNESCAPED_UNICODE);
+      $meigaraHigh =  json_encode($arrayHigh, JSON_UNESCAPED_UNICODE);
 
-      // return view('posts.stock')->with(['Meigaras' => $Meigaras,'inputCount' => count($array)]);
-      return view('posts.stock',compact('Meigaras','inputCount','arrayMeigaraCode','arrayDate','arrayPrice'));
+      return view('posts.stock',compact('Meigaras','meigaraDate','meigaraOpening','meigaraClosing','meigaraLow','meigaraHigh'));
     }
 
 }
