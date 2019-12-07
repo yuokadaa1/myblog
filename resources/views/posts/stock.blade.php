@@ -54,12 +54,6 @@ $(function() {
 });
 </script>
 
-<script>
-  var chartLabel = new Array();
-  var chartDate = new Array();
-  var chartPrice = new Array();
-</script>
-
 <form method="get" action="{{ url('/stock/meigaraCode') }}">
 	{{ csrf_field() }}
   <div class="box" data-formno="0" style="border:dashed 1px #ccc">
@@ -87,103 +81,129 @@ $(function() {
 	    <li>
 	      <a>証券コード：{{ $meigara->meigaraCode }}</a>
 	      <a>日付：{{ $meigara->date }}</a>
-	      <a>株価：{{ $meigara->lowPrice }}</a>
+	      <a>株価：{{ $meigara->openingPrice }}</a>
 	    </li>
-	    <script>
-				chartLabel.push(<?php echo $meigara->meigaraCode; ?>);
-	      startLive = new Date(<?php echo strtotime($meigara->date)*1000; ?>);
-	      chartDate.push(startLive);
-	      chartPrice.push(<?php echo $meigara->lowPrice; ?>);
-	    </script>
 		@empty
 	    <li>No meigara yet</li>
 	  @endforelse
 	</ul>
 
 	<script>
-		var chartDate2 = new Array();
-		var chartPrice2 = new Array();
+	  // var colorArray = ['blue','red','navy','teal','green','lime','aqua','yelow']
+		var colorArray = ['rgba(230,10,10,1)','rgba(0,0,14,0)','navy','teal','green','lime','aqua','yelow']
+		var chartDate = new Array();
+		var chartMeigaraCode = new Array();
+		var chartOpen = new Array();
+		var chartClose = new Array();
+		var chartHigh = new Array();
+		var chartLow = new Array();
 
+		//phpをechoしてjavascriptにデータを渡す。
 		var data = <?php echo $meigaraDate; ?>;
-		for(key in data){
-			chartDate2[key] = data[key];
-			alert(key + "さんの日付は、" + data[key] + "です。\n" + chartDate2[key]) ;
-		};
-		var data = <?php echo $meigaraOpening; ?>;
-		for(key in data){
-			alert(key + "さんのOpening金額は、" + data[key] + "です。") ;
-		};
-		var data = <?php echo $meigaraClosing; ?>;
-		for(key in data){
-			alert(key + "さんのClosing金額は、" + data[key] + "です。") ;
-		};
-		var data = <?php echo $meigaraHigh; ?>;
-		for(key in data){
-			alert(key + "さんのHigh金額は、" + data[key] + "です。") ;
-		};
-		var data = <?php echo $meigaraLow; ?>;
-		for(key in data){
-			chartPrice2[key] = data[key];
-			alert(key + "さんのlow金額は、" + data[key] + "です。\n" + chartPrice2[key]) ;
-		};
+		for(key in data){			chartMeigaraCode.push(key);		};
+		var i = 0;
+		var dataDate = <?php echo $meigaraDate; ?>;
+		var dataOpen = <?php echo $meigaraOpening; ?>;
+		var dataClose = <?php echo $meigaraClosing; ?>;
+		var dataHigh = <?php echo $meigaraHigh; ?>;
+		var dataLow = <?php echo $meigaraLow; ?>;
+		for(key in dataDate){
+			chartDate[i] = dataDate[key];
+			chartOpen.push(dataOpen[key]);
+			chartClose.push(dataClose[key]);
+			chartHigh.push(dataHigh[key]);
+			chartLow.push(dataLow[key]);
+			i++;
+		}
 
+		//chart.jsで使用するための配列に整理
+		var datasetsArray = new Array();
+		for (i = 0; i < chartMeigaraCode.length; i++) {
+			var datasetArray = new Array();
+			datasetArray['label'] = chartMeigaraCode[i];
+			datasetArray['type'] = 'line';
+			datasetArray['fill'] = 'false';
+			datasetArray['data'] = chartOpen[i];
+			datasetArray['borderColor'] = colorArray[i % 8];
+			datasetArray['backgroundColor'] = "rgba(0,0,0,0)";
+			datasetArray['yAxisID'] = "y-axis-1";
+			datasetsArray[i] = datasetArray;
+			//邪魔だからいったんコメントアウト（有効）
+			// console.log("datasetsArray[i]['borderColor']"  + i + ":" + datasetsArray[i]['borderColor']);
+	  }
+		console.log("datasetsArray[0]['data']" + datasetsArray[0]['data']);
+		console.log("datasetsArray[0]['borderColor']" + datasetsArray[0]['borderColor']);
+		console.log("datasetsArray[1]['data']" + datasetsArray[1]['data']);
+		console.log("datasetsArray[1]['borderColor']" + datasetsArray[1]['borderColor']);
 	</script>
-	<a>
-
 @else
   <p>受け取る変数なし。</p>
 @endif
 
-
-//<script>
-//  alert('label：' + chartLabel + 'date：' + chartDate + 'price：' + chartPrice);
-//</script>
-
 <h1>グラフ</h1>
-<canvas id="myLineChart"></canvas>
-<script>
-	var ctx = document.getElementById("myLineChart");
-	var myLineChart = new Chart(ctx, {
-	  type: 'line',
-	  data: {
-	    // labels: ['8月1日', '8月2日', '8月3日', '8月4日', '8月5日', '8月6日', '8月7日'],
-	    labels: chartDate2[1301],
-	    datasets: [
-	      {
-	        label: '最高気温(度）',
-	        // data: [35, 34, 37, 35, 34, 35, 34, 25],
-	        data: chartPrice2[1301],
-	        borderColor: "rgba(255,0,0,1)",
-	        backgroundColor: "rgba(0,0,0,0)"
-	      },
-	      {
-	        label: '最低気温(度）',
-	        data: [7025, 7027, 7027, 7025, 7026, 7027, 7025, 7021],
-	        // data: [25, 27, 27, 25, 26, 27, 25, 21],
-	        borderColor: "rgba(0,0,255,1)",
-	        backgroundColor: "rgba(0,0,0,0)"
-	      }
-	    ],
-	  },
-	  options: {
-	    title: {
-	      display: true,
-	      text: '気温（8月1日~8月7日）'
-	    },
-	    scales: {
-	      yAxes: [{
-	        ticks: {
-	          suggestedMax: 40,
-	          suggestedMin: 0,
-	          stepSize: 10,
-	          callback: function(value, index, values){
-	            return  value +  '円'
-	          }
-	        }
-	      }]
-	    },
-	  }
-	});
+<canvas id="myChart"></canvas>
+<script type="text/javascript">
+		var ctx = document.getElementById('myChart').getContext('2d');
+		var myChart = new Chart(ctx, {
+				type: 'bar',
+				data: {
+						labels: chartDate[0],
+						datasets: datasetsArray
+						// datasets: [{
+						// 		label: '折れ線A',
+						// 		type: "line",
+						// 		fill: false,
+						// 		data: [10000, 11000, 15000, 12000, 9000, 12000, 13000],
+						// 		borderColor: "rgb(154, 162, 235)",
+						// 		yAxisID: "y-axis-1",
+						// }, {
+						// 		label: '折れ線B',
+						// 		type: "line",
+						// 		fill: false,
+						// 		data: [8000, 9000, 10000, 9000, 6000, 8000, 7000],
+						// 		borderColor: "rgb(54, 162, 235)",
+						// 		yAxisID: "y-axis-1",
+						// }, {
+						// 		label: '棒グラフ',
+						// 		data: [22, 23, 10, 15, 40, 35, 30],
+						// 		borderColor: "rgb(255, 99, 132)",
+						// 		backgroundColor: "rgba(255, 99, 132, 0.2)",
+						// 		yAxisID: "y-axis-2",
+						// }]
+				},
+				options: {
+						tooltips: {
+								mode: 'nearest',
+								intersect: false,
+						},
+						responsive: true,
+						scales: {
+								yAxes: [{
+										id: "y-axis-1",
+										type: "linear",
+										position: "left",
+										ticks: {
+												max: 3000,
+												min: 0,
+												stepSize: 1000
+										},
+								}, {
+										id: "y-axis-2",
+										type: "linear",
+										position: "right",
+										ticks: {
+												max: 200,
+												min: 0,
+												stepSize: 5
+										},
+										gridLines: {
+												drawOnChartArea: false,
+										},
+								}],
+						},
+				}
+		});
+
 </script>
 
 @endsection

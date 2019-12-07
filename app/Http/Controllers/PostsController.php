@@ -58,7 +58,7 @@ class PostsController extends Controller
          $array[] = $input;
       }
       //DBから値を取得
-      $Meigaras = Meigara::select('meigaraCode', 'date','openingPrice','closingPrice','highPrice','lowPrice')->whereIn('meigaraCode', $array)->where('date','like','2019-11%')->orderBy('meigaraCode','asc')->orderBy('date','desc')->get();
+      $Meigaras = Meigara::select('meigaraCode', 'date','openingPrice','closingPrice','highPrice','lowPrice')->whereIn('meigaraCode', $array)->where('date','like','2019-11%')->orderBy('meigaraCode','asc')->orderBy('date','asc')->get();
 
       //json変換用に日付、各金額のみを抽出した二次配列に変換（キーは銘柄コード）
       $arrayDate = $Meigaras->mapToGroups(function ($item, $key) {
